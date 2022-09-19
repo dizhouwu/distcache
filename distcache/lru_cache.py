@@ -9,8 +9,9 @@ Allows for easier reasoning of code.
 # Tested against leetcode's test cases: https://leetcode.com/submissions/detail/359080389/.
 In project, test cases would be way better though.
 """
+from functools import lru_cache
 from multiprocessing import Lock
-
+import pickle
 
 class LRUCache:
     """

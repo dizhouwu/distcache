@@ -27,7 +27,7 @@ class CacheServer:
     operations.
     """
 
-    def __init__(self, host='localhost', port=2050, capacity=100, expire=0, filename=0):
+    def __init__(self, host='localhost', port=2050, capacity=100, expire=0, filename=None):
         """
         :param num_virtual_replicas: number of virtual replicas of each cache server
         :param expire: expiration time for keys in seconds.
@@ -53,12 +53,14 @@ class CacheServer:
 
         # Logging
         self.dbname = 'cache.db' if filename is None else filename
-        self.logger = logger.Logger(filename=self.dbname, mode='a', batch_size=1)
+        self.logger = logger.Logger(filename=self.dbname, mode='ab', batch_size=1)
 
         self.save_every_k_seconds = config.save_every_k_seconds
 
-        self.reconstruct()
+        if os.stat(self.dbname).st_size!=0:
+            self.reconstruct()
         self.monitor()  # start the server
+        
         threading.Thread(target=self.snapshot).start()
 
     def snapshot(self):
